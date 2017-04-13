@@ -1,4 +1,4 @@
-Package: com.cividesk.api.logging
+Package: com.cividesk.apilogging
 Copyright (C) 2017, Sean Madsen <sean@seanmadsen.com>
 Licensed under the GNU Affero Public License 3.0 (below).
 

@@ -1,14 +1,14 @@
 <?php
 
-require_once 'logging.civix.php';
+require_once 'apilogging.civix.php';
 
 /**
  * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function logging_civicrm_config(&$config) {
-  _logging_civix_civicrm_config($config);
+function apilogging_civicrm_config(&$config) {
+  _apilogging_civix_civicrm_config($config);
 }
 
 /**
@@ -16,8 +16,8 @@ function logging_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
-function logging_civicrm_xmlMenu(&$files) {
-  _logging_civix_civicrm_xmlMenu($files);
+function apilogging_civicrm_xmlMenu(&$files) {
+  _apilogging_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -25,8 +25,8 @@ function logging_civicrm_xmlMenu(&$files) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function logging_civicrm_install() {
-  _logging_civix_civicrm_install();
+function apilogging_civicrm_install() {
+  _apilogging_civix_civicrm_install();
 }
 
 /**
@@ -34,8 +34,8 @@ function logging_civicrm_install() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
  */
-function logging_civicrm_postInstall() {
-  _logging_civix_civicrm_postInstall();
+function apilogging_civicrm_postInstall() {
+  _apilogging_civix_civicrm_postInstall();
 }
 
 /**
@@ -43,8 +43,8 @@ function logging_civicrm_postInstall() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
-function logging_civicrm_uninstall() {
-  _logging_civix_civicrm_uninstall();
+function apilogging_civicrm_uninstall() {
+  _apilogging_civix_civicrm_uninstall();
 }
 
 /**
@@ -52,8 +52,8 @@ function logging_civicrm_uninstall() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
-function logging_civicrm_enable() {
-  _logging_civix_civicrm_enable();
+function apilogging_civicrm_enable() {
+  _apilogging_civix_civicrm_enable();
 }
 
 /**
@@ -61,8 +61,8 @@ function logging_civicrm_enable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
-function logging_civicrm_disable() {
-  _logging_civix_civicrm_disable();
+function apilogging_civicrm_disable() {
+  _apilogging_civix_civicrm_disable();
 }
 
 /**
@@ -70,8 +70,8 @@ function logging_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function logging_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _logging_civix_civicrm_upgrade($op, $queue);
+function apilogging_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  return _apilogging_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -82,8 +82,8 @@ function logging_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
-function logging_civicrm_managed(&$entities) {
-  _logging_civix_civicrm_managed($entities);
+function apilogging_civicrm_managed(&$entities) {
+  _apilogging_civix_civicrm_managed($entities);
 }
 
 /**
@@ -95,8 +95,8 @@ function logging_civicrm_managed(&$entities) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
-function logging_civicrm_caseTypes(&$caseTypes) {
-  _logging_civix_civicrm_caseTypes($caseTypes);
+function apilogging_civicrm_caseTypes(&$caseTypes) {
+  _apilogging_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -109,8 +109,8 @@ function logging_civicrm_caseTypes(&$caseTypes) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules
  */
-function logging_civicrm_angularModules(&$angularModules) {
-  _logging_civix_civicrm_angularModules($angularModules);
+function apilogging_civicrm_angularModules(&$angularModules) {
+  _apilogging_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -118,8 +118,8 @@ function logging_civicrm_angularModules(&$angularModules) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
-function logging_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _logging_civix_civicrm_alterSettingsFolders($metaDataFolders);
+function apilogging_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
+  _apilogging_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
 // --- Functions below this ship commented out. Uncomment as required. ---
@@ -129,7 +129,7 @@ function logging_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
  *
-function logging_civicrm_preProcess($formName, &$form) {
+function apilogging_civicrm_preProcess($formName, &$form) {
 
 } // */
 
@@ -138,14 +138,14 @@ function logging_civicrm_preProcess($formName, &$form) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  *
-function logging_civicrm_navigationMenu(&$menu) {
-  _logging_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => ts('The Page', array('domain' => 'com.cividesk.api.logging')),
+function apilogging_civicrm_navigationMenu(&$menu) {
+  _apilogging_civix_insert_navigation_menu($menu, NULL, array(
+    'label' => ts('The Page', array('domain' => 'com.cividesk.apilogging')),
     'name' => 'the_page',
     'url' => 'civicrm/the-page',
     'permission' => 'access CiviReport,access CiviContribute',
     'operator' => 'OR',
     'separator' => 0,
   ));
-  _logging_civix_navigationMenu($menu);
+  _apilogging_civix_navigationMenu($menu);
 } // */
