@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <extension key="com.cividesk.api.logging" type="module">
   <file>logging</file>
-  <name>FIXME</name>
-  <description>FIXME</description>
+  <name>API Logging</name>
+  <description>Logs API calls to a file and database table</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Sean Madsen</author>
     <email>sean@seanmadsen.com</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">http://FIXME</url>
-    <url desc="Documentation">http://FIXME</url>
-    <url desc="Support">http://FIXME</url>
+    <url desc="Main Extension Page">https://github.com/seanmadsen/com.cividesk.api.logging</url>
+    <url desc="Documentation">https://github.com/seanmadsen/com.cividesk.api.logging#api-logging</url>
+    <url desc="Support">https://github.com/seanmadsen/com.cividesk.api.logging/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate>2017-04-12</releaseDate>
@@ -20,7 +20,6 @@
   <compatibility>
     <ver>4.7</ver>
   </compatibility>
-  <comments>This is a new, undeveloped module</comments>
   <civix>
     <namespace>CRM/Logging</namespace>
   </civix>
