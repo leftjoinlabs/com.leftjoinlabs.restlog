@@ -3,6 +3,13 @@
 require_once 'apilogging.civix.php';
 
 /**
+ * Implements hook_civicrm_apiWrappers
+ */
+function apilogging_civicrm_apiWrappers(&$wrappers, $apiRequest) {
+  $wrappers[] = new CRM_Apilogging_APIWrapper();
+}
+
+/**
  * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
