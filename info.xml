@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<extension key="com.cividesk.apilogging" type="module">
+<extension key="com.cividesk.api.logging" type="module">
   <file>apilogging</file>
   <name>API Logging</name>
   <description>Logs API calls to a file and database table</description>
@@ -9,9 +9,9 @@
     <email>sean@seanmadsen.com</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">https://github.com/seanmadsen/com.cividesk.apilogging</url>
-    <url desc="Documentation">https://github.com/seanmadsen/com.cividesk.apilogging#api-logging</url>
-    <url desc="Support">https://github.com/seanmadsen/com.cividesk.apilogging/issues</url>
+    <url desc="Main Extension Page">https://github.com/seanmadsen/com.cividesk.api.logging</url>
+    <url desc="Documentation">https://github.com/seanmadsen/com.cividesk.api.logging#api-logging</url>
+    <url desc="Support">https://github.com/seanmadsen/com.cividesk.api.logging/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate>2017-04-12</releaseDate>
