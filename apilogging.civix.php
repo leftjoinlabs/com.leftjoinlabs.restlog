@@ -190,7 +190,7 @@ function _apilogging_civix_civicrm_managed(&$entities) {
     $es = include $file;
     foreach ($es as $e) {
       if (empty($e['module'])) {
-        $e['module'] = 'com.cividesk.apilogging';
+        $e['module'] = 'com.cividesk.api.logging';
       }
       $entities[] = $e;
       if (empty($e['params']['version'])) {
@@ -222,7 +222,7 @@ function _apilogging_civix_civicrm_caseTypes(&$caseTypes) {
       // throw new CRM_Core_Exception($errorMessage);
     }
     $caseTypes[$name] = array(
-      'module' => 'com.cividesk.apilogging',
+      'module' => 'com.cividesk.api.logging',
       'name' => $name,
       'file' => $file,
     );
@@ -248,7 +248,7 @@ function _apilogging_civix_civicrm_angularModules(&$angularModules) {
     $name = preg_replace(':\.ang\.php$:', '', basename($file));
     $module = include $file;
     if (empty($module['ext'])) {
-      $module['ext'] = 'com.cividesk.apilogging';
+      $module['ext'] = 'com.cividesk.api.logging';
     }
     $angularModules[$name] = $module;
   }
