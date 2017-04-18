@@ -25,8 +25,8 @@ class CRM_Apilogging_Logger {
    */
   protected function logIsNecessary($apiRequest) {
     $isGeneric = !empty($apiRequest['is_generic']) && $apiRequest['is_generic'];
-    $hasKeys = !empty($_REQUEST['key'] )&& !empty($_REQUEST['api_key']);
-    return $isGeneric && $hasKeys;
+    $hasKeys = !empty($_REQUEST['key']) && !empty($_REQUEST['api_key']);
+    return !$isGeneric && $hasKeys;
   }
 
   /**
