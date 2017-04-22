@@ -24,9 +24,13 @@ class CRM_Apilogging_Logger {
    * @return bool
    */
   protected function logIsNecessary($apiRequest) {
-    $isGeneric = !empty($apiRequest['is_generic']) && $apiRequest['is_generic'];
-    $hasKeys = !empty($_REQUEST['key']) && !empty($_REQUEST['api_key']);
-    return !$isGeneric && $hasKeys;
+    if (empty($GLOBALS['apilogging_logged'])) {
+      $GLOBALS['apilogging_logged'] = TRUE;
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
   }
 
   /**
