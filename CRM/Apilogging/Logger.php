@@ -24,7 +24,8 @@ class CRM_Apilogging_Logger {
    * @return bool
    */
   protected function logIsNecessary($apiRequest) {
-    if (empty($GLOBALS['apilogging_logged'])) {
+    $hasKeys = !empty($_REQUEST['key']) && !empty($_REQUEST['api_key']);
+    if ($hasKeys && empty($GLOBALS['apilogging_logged'])) {
       $GLOBALS['apilogging_logged'] = TRUE;
       return TRUE;
     }
