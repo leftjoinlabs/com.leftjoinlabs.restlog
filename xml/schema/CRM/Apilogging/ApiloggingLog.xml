@@ -4,16 +4,13 @@
   <base>CRM/Apilogging</base>
   <class>ApiloggingLog</class>
   <name>civicrm_apilogginglog</name>
-  <comment>FIXME</comment>
-  <add>4.4</add>
-  <log>true</log>
+  <comment>A log of incoming REST API calls</comment>
 
   <field>
     <name>id</name>
     <type>int unsigned</type>
     <required>true</required>
     <comment>Unique ApiloggingLog ID</comment>
-    <add>4.4</add>
   </field>
   <primaryKey>
     <name>id</name>
@@ -21,17 +18,43 @@
   </primaryKey>
 
   <field>
-    <name>contact_id</name>
+    <name>time_stamp</name>
+    <type>datetime</type>
+    <title>Time stamp</title>
+    <required>true</required>
+  </field>
+
+  <field>
+    <name>calling_contact_id</name>
     <type>int unsigned</type>
-    <comment>FK to Contact</comment>
-    <add>4.4</add>
+    <title>Calling Contact</title>
+    <comment>FK to the id of the contact who made the API call</comment>
   </field>
   <foreignKey>
-    <name>contact_id</name>
+    <name>calling_contact_id</name>
     <table>civicrm_contact</table>
     <key>id</key>
-    <add>4.4</add>
-    <onDelete>CASCADE</onDelete>
+    <onDelete>SET NULL</onDelete>
   </foreignKey>
+
+  <field>
+    <name>entity</name>
+    <type>char</type>
+    <title>Entity</title>
+    <length>100</length>
+  </field>
+
+  <field>
+    <name>action</name>
+    <type>char</type>
+    <title>Action</title>
+    <length>100</length>
+  </field>
+
+  <field>
+    <name>parameters</name>
+    <title>Parameters</title>
+    <type>text</type>
+  </field>
 
 </table>
