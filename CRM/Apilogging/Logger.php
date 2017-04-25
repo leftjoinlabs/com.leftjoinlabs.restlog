@@ -50,6 +50,21 @@ class CRM_Apilogging_Logger {
   }
 
   /**
+   * Get information about the contact record associated with the API key used
+   * to make this API call.
+   *
+   * @return array assoc with 'id' and 'display_name' as keys
+   */
+  protected function getCallingContact() {
+    $apiKey = CRM_Core_DAO::escapeString($_REQUEST['api_key']);
+    $query = CRM_Core_DAO::executeQuery("
+      SELECT id, display_name 
+      FROM civicrm_contact 
+      WHERE api_key = '$apiKey'");
+    return $query->fetchAll()[0];
+  }
+
+  /**
    * Return an assoc array of things we want to log
    *
    * @return array
@@ -61,6 +76,7 @@ class CRM_Apilogging_Logger {
       $logValues = array_merge($logValues, $json);
     }
     CRM_Utils_Array::remove($logValues, array('key', 'api_key', 'json'));
+    $logValues['called_by'] = $this->getCallingContact();
     return $logValues;
   }
 
