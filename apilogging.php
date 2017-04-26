@@ -3,10 +3,21 @@
 require_once 'apilogging.civix.php';
 
 /**
- * Implements hook_civicrm_apiWrappers
+ * Implements hook_civicrm_apiWrappers().
  */
 function apilogging_civicrm_apiWrappers(&$wrappers, $apiRequest) {
-  $wrappers[] = new CRM_Apilogging_APIWrapper();
+  $wrappers[''] = new CRM_Apilogging_APIWrapper();
+}
+
+/**
+ * inplements hook_civicrm_entityTypes().
+ */
+function apilogging_civicrm_entityTypes(&$entityTypes) {
+  $entityTypes['CRM_Apilogging_DAO_ApiloggingLog'] = array(
+    'name' => 'ApiloggingLog',
+    'class' => 'CRM_Apilogging_DAO_ApiloggingLog',
+    'table' => 'civicrm_apilogginglog',
+  );
 }
 
 /**
