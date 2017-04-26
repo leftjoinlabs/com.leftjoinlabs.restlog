@@ -8,12 +8,22 @@ class CRM_Apilogging_Logger {
   protected $logFile;
 
   /**
+   * The current time with unixtime seconds and microseconds
+   * @var array of integers with keys 'microseconds' and 'seconds'
+   */
+  protected $time;
+
+  /**
    * CRM_Apilogging_Logger constructor.
    */
   public function __construct() {
     // TODO: find a better way to determine this path
     $this->logFile = __DIR__ . '/../../../../ConfigAndLog/Api.log';
 
+    $this->time = array_combine(
+        array( 'microseconds', 'seconds'),
+        explode(" ", microtime())
+    );
     if (!file_exists($this->logFile)) {
       touch($this->logFile);
     }
@@ -45,7 +55,9 @@ class CRM_Apilogging_Logger {
    */
   public function logAPIRequest($apiRequest) {
     if ($this->logIsNecessary($apiRequest)) {
-      $this->writeLogFile();
+      $logValues = $this->getLogValues();
+      $this->writeLogFile($logValues);
+      $this->writeLogDB($logValues);
     }
   }
 
@@ -61,7 +73,13 @@ class CRM_Apilogging_Logger {
       SELECT id, display_name 
       FROM civicrm_contact 
       WHERE api_key = '$apiKey'");
-    return $query->fetchAll()[0];
+    $result = $query->fetchAll();
+    if (!empty($result)) {
+      return $result[0];
+    }
+    else {
+      return array('id' => '');
+    }
   }
 
   /**
@@ -70,7 +88,8 @@ class CRM_Apilogging_Logger {
    * @return array
    */
   protected function getLogValues () {
-    $logValues = $_REQUEST;
+    $defaults = array('entity' => '', 'action' => '');
+    $logValues = array_merge($defaults, $_REQUEST);
     if (!empty($_REQUEST['json'])) {
       $json = json_decode($_REQUEST['json'], TRUE);
       $logValues = array_merge($logValues, $json);
@@ -83,12 +102,46 @@ class CRM_Apilogging_Logger {
   /**
    * Write log values to our log file. We write it as JSON so that (if needed)
    * you can parse the log file easily.
+   *
+   * @param array $logValues
    */
-  protected function writeLogFile() {
-    $content = '"' . self::timeString() . '": ';
-    $content .= json_encode(self::getLogValues(), JSON_PRETTY_PRINT) . "," . PHP_EOL;
+  protected function writeLogFile($logValues) {
+    $content = '"' . self::microTimeString() . '": ';
+    $content .= json_encode($logValues, JSON_PRETTY_PRINT) . "," . PHP_EOL;
     $content .= PHP_EOL . PHP_EOL;
     file_put_contents($this->logFile, $content, FILE_APPEND);
+  }
+
+  /**
+   * Write log values to the database
+   *
+   * @param array $logValues
+   */
+  protected function writeLogDB($logValues) {
+    $parameters = $logValues;
+    CRM_Utils_Array::remove($parameters, array(
+      'called_by',
+      'entity',
+      'action',
+    ));
+    CRM_Apilogging_BAO_ApiloggingLog::create(array(
+      'time_stamp' => $this->timeString(),
+      'calling_contact_id' => $logValues['called_by']['id'],
+      'entity' => $logValues['entity'],
+      'action' => $logValues['action'],
+      'parameters' => json_encode($parameters),
+    ));
+  }
+
+  /**
+   * Return a string which represents the current time, in simple ISO 8601
+   * format (like MySQL uses)
+   *
+   * @return string
+   */
+  protected function timeString() {
+    $d = new DateTime('@' . $this->time['seconds']);
+    return $d->format('Y-m-d H:i:s');
   }
 
   /**
@@ -97,12 +150,10 @@ class CRM_Apilogging_Logger {
    *
    * @return string
    */
-  protected function timeString() {
-    $time = array_combine(array('microseconds', 'seconds'), explode(" ", microtime()));
-    $d = new DateTime('@' . $time['seconds']);
-    return $d->format('Y-m-d H:i:s')
-      . ltrim($time['microseconds'], "0")
-      . $d->format('P');
+  protected function microTimeString() {
+    return $this->timeString()
+      . ltrim($this->time['microseconds'], "0")
+      . "+00:00";
   }
 
 }
