@@ -1,48 +1,43 @@
-(function(angular, $, _) {
+(function (angular, $, _) {
 
-  angular.module('apilogging').config(function($routeProvider) {
+  var apilogging = angular.module('apilogging');
+
+  apilogging.config(
+    function ($routeProvider) {
       $routeProvider.when('/apilogging/log', {
         controller: 'ApiloggingApiLogCtrl',
-        templateUrl: '~/apilogging/ApiLogCtrl.html',
-
-        // If you need to look up data when opening the page, list it out
-        // under "resolve".
-        resolve: {
-          myContact: function(crmApi) {
-            return crmApi('Contact', 'getsingle', {
-              id: 'user_contact_id',
-              return: ['first_name', 'last_name']
-            });
-          }
-        }
+        templateUrl: '~/apilogging/ApiLogCtrl.html'
       });
     }
   );
 
-  // The controller uses *injection*. This default injects a few things:
-  //   $scope -- This is the set of variables shared between JS and HTML.
-  //   crmApi, crmStatus, crmUiHelp -- These are services provided by civicrm-core.
-  //   myContact -- The current contact, defined above in config().
-  angular.module('apilogging').controller('ApiloggingApiLogCtrl', function($scope, crmApi, crmStatus, crmUiHelp, myContact) {
-    // The ts() and hs() functions help load strings for this module.
-    var ts = $scope.ts = CRM.ts('apilogging');
-    var hs = $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'}); // See: templates/CRM/apilogging/ApiLogCtrl.hlp
+  apilogging.controller('ApiloggingApiLogCtrl',
+    ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp',
+      function ($scope, crmApi, crmStatus, crmUiHelp) {
 
-    // We have myContact available in JS. We also want to reference it in HTML.
-    $scope.myContact = myContact;
+        var ts = $scope.ts = CRM.ts('apilogging');
+        var hs = $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
 
-    $scope.save = function save() {
-      return crmStatus(
-        // Status messages. For defaults, just use "{}"
-        {start: ts('Saving...'), success: ts('Saved')},
-        // The save action. Note that crmApi() returns a promise.
-        crmApi('Contact', 'create', {
-          id: myContact.id,
-          first_name: myContact.first_name,
-          last_name: myContact.last_name
-        })
-      );
-    };
-  });
+        $scope.search = function () {
+          crmApi('ApiloggingLog', 'get', {
+            "sequential": 1,
+            "return": [
+              "time_stamp",
+              "id",
+              "calling_contact_id",
+              "calling_contact_id.display_name",
+              "entity",
+              "action",
+              "parameters"
+            ],
+            "options": {"limit": ""}
+          }).then(function (result) {
+            $scope.results = result;
+          });
+        }
+
+      }
+    ]
+  );
 
 })(angular, CRM.$, CRM._);
