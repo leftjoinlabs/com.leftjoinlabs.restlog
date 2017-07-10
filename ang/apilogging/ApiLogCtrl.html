@@ -2,7 +2,74 @@
 
   <h1 crm-page-title>{{ts('API Logging Log')}}</h1>
 
-  <button ng-click="search()">Search</button>
+  <p>
+    <label for="entity">Entity</label>
+    <select id="entity"
+            name="entity"
+            title="Entity"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.entity"
+            ng-change="search()"
+            crm-ui-select="{
+              placeholder: 'Any',
+              allowClear: true,
+              }"
+    >
+      <option value=""></option>
+      <option ng-repeat="option in entityOptions" value="{{option.value}}">{{option.label}}</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="action">Action</label>
+    <select id="action"
+            name="action"
+            title="Action"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.action"
+            ng-change="search()"
+            crm-ui-select="{
+              placeholder: 'Any',
+              allowClear: true,
+              }"
+    >
+      <option value=""></option>
+      <option ng-repeat="option in actionOptions" value="{{option.value}}">{{option.label}}</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="action">Calling contact</label>
+    <select id="callingContact"
+            name="callingContact"
+            title="Calling contact"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.callingContact"
+            ng-change="search()"
+            crm-ui-select="{
+              placeholder: 'Any',
+              allowClear: true,
+              }"
+    >
+      <option value=""></option>
+      <option ng-repeat="option in callingContactOptions" value="{{option.value}}">{{option.label}}</option>
+    </select>
+  </p>
+
+  <button crm-icon="fa-refresh"
+          ng-click="search()"
+  >
+    Refresh
+  </button>
+
+  <button crm-icon="fa-trash"
+          crm-confirm="{message: ts('Are you sure you want to delete all the log entries?')}"
+          on-yes="delete()">
+    Delete log entries
+  </button>
 
   <table ng-show="results.values">
     <thead>

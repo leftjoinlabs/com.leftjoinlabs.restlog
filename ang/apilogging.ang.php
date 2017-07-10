@@ -4,21 +4,17 @@
 // http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules
 
 return array (
-  'js' => 
-  array (
+  'js' => array (
     0 => 'ang/apilogging.js',
     1 => 'ang/apilogging/*.js',
     2 => 'ang/apilogging/*/*.js',
   ),
-  'css' => 
-  array (
+  'css' => array (
     0 => 'ang/apilogging.css',
   ),
-  'partials' => 
-  array (
+  'partials' => array (
     0 => 'ang/apilogging',
   ),
-  'settings' => 
-  array (
+  'settings' => array (
   ),
 );
