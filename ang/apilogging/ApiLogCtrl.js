@@ -61,7 +61,7 @@
 
     var Searcher = function (entity) {
       this.entity = entity;
-      this.busy = false;
+      this.isBusy = false;
       this.pageSize = 50;
       this.defaultParams = {
         "sequential": 1,
@@ -82,13 +82,15 @@
       };
       this.results = {
         count: 0,
-        data: []
+        data: [],
+        isComplete: false
       };
     };
 
     Searcher.prototype.search = function (searchParams, isFresh) {
-      if (this.busy) return;
-      this.busy = true;
+      var ignore = this.isBusy || (this.results.isComplete && !isFresh);
+      if (ignore) return;
+      this.isBusy = true;
       var params = {};
       _.merge(params, this.defaultParams);
       _.merge(params, searchParams);
@@ -100,17 +102,21 @@
         if (isFresh) {
           // Clear existing results if doing a fresh search
           this.results.data = [];
+          this.results.isComplete = false;
+        }
+        if (result.values.length === 0) {
+          this.results.isComplete = true;
         }
         // Add new results to existing results
         this.results.data = this.results.data.concat(result.values);
         if (isFresh) {
           crmApi(this.entity, 'getcount', params).then(function (result) {
             this.results.count = result.result;
-            this.busy = false;
+            this.isBusy = false;
           }.bind(this));
         }
         else {
-          this.busy = false;
+          this.isBusy = false;
         }
       }.bind(this));
     };

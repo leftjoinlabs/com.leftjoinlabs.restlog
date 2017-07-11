@@ -93,7 +93,7 @@
     <!-- TODO: when we get to the bottom we need stop making XHR -->
     <tbody
       infinite-scroll="searcher.continuedSearch(getSearchParams())"
-      infinite-scroll-disabled="searcher.busy"
+      infinite-scroll-disabled="searcher.isBusy || searcher.results.isComplete"
       infinite-scroll-distance="1">
     <tr ng-repeat="row in searcher.results.data">
       <td>{{row.id}}</td>
