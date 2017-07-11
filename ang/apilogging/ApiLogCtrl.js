@@ -57,76 +57,121 @@
     }
   );
 
-  apilogging.controller('ApiloggingApiLogCtrl',
-    ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions',
-      function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions) {
+  apilogging.factory('Searcher', ['crmApi', function (crmApi) {
 
-        $scope.entityOptions = entityOptions;
-        $scope.actionOptions = actionsOptions;
-        $scope.callingContactOptions = callingContactOptions;
-
-        $scope.formValues = {
-          entity: [],
-          action: [],
-          callingContact: []
-        };
-
-        var ts = $scope.ts = CRM.ts('apilogging');
-        var hs = $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
-
-        /**
-         * Looks at $scope.formValues. Then assembles and returns an object
-         *
-         * @returns object
-         */
-        var getSearchParams = function () {
-          var params = {};
-          if ($scope.formValues.entity.length > 0) {
-            params = _.merge(params, {"entity": {"IN": $scope.formValues.entity}});
-          }
-          if ($scope.formValues.action.length > 0) {
-            params = _.merge(params, {"action": {"IN": $scope.formValues.action}});
-          }
-          if ($scope.formValues.callingContact.length > 0) {
-            params = _.merge(params, {"calling_contact_id": {"IN": $scope.formValues.callingContact}});
-          }
-          return params;
-        };
-
-        // Make the API request for the search
-        $scope.search = function () {
-          var params = {
-            "sequential": 1,
-            "return": [
-              "time_stamp",
-              "id",
-              "calling_contact_id",
-              "calling_contact_id.display_name",
-              "entity",
-              "action",
-              "parameters"
-            ],
-            "options": {
-              "limit": 50,
-              "sort": "time_stamp desc"
-            }
-          };
-          var searchParams = getSearchParams();
-          params = _.merge(params, searchParams);
-          console.log(searchParams);
-          crmApi('ApiloggingLog', 'get', params).then(function (results) {
-            $scope.results = results;
-          });
-        };
-
-        // perform the search now so that the page begins with some results
-        $scope.search();
-
-        $scope.delete = function () {
-          alert('TODO');
+    var Searcher = function (entity) {
+      this.entity = entity;
+      this.busy = false;
+      this.pageSize = 50;
+      this.defaultParams = {
+        "sequential": 1,
+        "return": [
+          "time_stamp",
+          "id",
+          "calling_contact_id",
+          "calling_contact_id.display_name",
+          "entity",
+          "action",
+          "parameters"
+        ],
+        "options": {
+          "limit": this.pageSize,
+          "sort": "id", // "time_stamp desc" TODO
+          "offset": 0
         }
+      };
+      this.results = {
+        count: 0,
+        data: []
+      };
+    };
 
+    Searcher.prototype.search = function (searchParams, isFresh) {
+      if (this.busy) return;
+      this.busy = true;
+      var params = {};
+      _.merge(params, this.defaultParams);
+      _.merge(params, searchParams);
+      if (!isFresh) {
+        // If continuing, then use an offset
+        params.options.offset = this.results.data.length;
       }
+      crmApi(this.entity, 'get', params).then(function (result) {
+        if (isFresh) {
+          // Clear existing results if doing a fresh search
+          this.results.data = [];
+        }
+        // Add new results to existing results
+        this.results.data = this.results.data.concat(result.values);
+        if (isFresh) {
+          crmApi(this.entity, 'getcount', params).then(function (result) {
+            this.results.count = result.result;
+            this.busy = false;
+          }.bind(this));
+        }
+        else {
+          this.busy = false;
+        }
+      }.bind(this));
+    };
+
+    Searcher.prototype.freshSearch = function (searchParams) {
+      this.search(searchParams, true);
+    };
+
+    Searcher.prototype.continuedSearch = function (searchParams) {
+      this.search(searchParams, false)
+    };
+
+    return Searcher;
+
+  }]);
+
+  apilogging.controller('ApiloggingApiLogCtrl',
+    function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions, Searcher) {
+
+      $scope.ts = CRM.ts('apilogging');
+      $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
+      $scope.entityOptions = entityOptions;
+      $scope.actionOptions = actionsOptions;
+      $scope.callingContactOptions = callingContactOptions;
+      $scope.searcher = new Searcher('ApiloggingLog');
+      $scope.formValues = {          entity: [],
+        action: [],
+        callingContact: []
+      };
+
+      /**
+       * Looks at $scope.formValues. Then assembles and returns an object
+       *
+       * @returns object
+       */
+      $scope.getSearchParams = function () {
+        var params = {};
+        if ($scope.formValues.entity.length > 0) {
+          params = _.merge(params, {"entity": {"IN": $scope.formValues.entity}});
+        }
+        if ($scope.formValues.action.length > 0) {
+          params = _.merge(params, {"action": {"IN": $scope.formValues.action}});
+        }
+        if ($scope.formValues.callingContact.length > 0) {
+          params = _.merge(params, {"calling_contact_id": {"IN": $scope.formValues.callingContact}});
+        }
+        return params;
+      };
+
+      // TODO: Search, filter one value, then clear that value. Should update. Doesn't.
+
+
+      // start with search already done
+      $scope.searcher.freshSearch($scope.getSearchParams());
+
+      $scope.delete = function () {
+        alert('TODO');
+      }
+
+    },
+    ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher'
     ]
   );
 
