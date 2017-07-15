@@ -2,110 +2,221 @@
 
   <h1 crm-page-title>{{ts('API Logging Log')}}</h1>
 
-  <p>
-    <label for="entity">Entity</label>
-    <select
-      id="entity"
-      name="entity"
-      title="Entity"
-      class="big"
-      multiple="multiple"
-      ng-model="formValues.entity"
-      ng-change="searcher.freshSearch(getSearchParams())"
-      crm-ui-select="{
-        placeholder: 'Any',
-        allowClear: true,
-        }"
-    >
-      <option value=""></option>
-      <option ng-repeat="option in entityOptions" value="{{option.value}}">{{option.label}}</option>
-    </select>
-  </p>
+  <div class="crm-form-block crm-section">
 
-  <p>
-    <label for="action">Action</label>
-    <select
-      id="action"
-      name="action"
-      title="Action"
-      class="big"
-      multiple="multiple"
-      ng-model="formValues.action"
-      ng-change="searcher.freshSearch(getSearchParams())"
-      crm-ui-select="{
-        placeholder: 'Any',
-        allowClear: true,
-        }"
-    >
-      <option value=""></option>
-      <option ng-repeat="option in actionOptions" value="{{option.value}}">{{option.label}}</option>
-    </select>
-  </p>
+    <h2 class="panel-title">{{ts('Filter Log Entries')}}</h2>
 
-  <p>
-    <label for="action">Calling contact</label>
-    <select
-      id="callingContact"
-      name="callingContact"
-      title="Calling contact"
-      class="big"
-      multiple="multiple"
-      ng-model="formValues.callingContact"
-      ng-change="searcher.freshSearch(getSearchParams())"
-      crm-ui-select="{
+    <form>
+
+      <div class="crm-section">
+        <div class="label">
+          <label for="startDate">After date</label>
+        </div>
+        <div class="content">
+          <input
+            id="startDate"
+            name="startDate"
+            title="After date"
+            ng-model="formValues.startDate"
+            ng-change="searcher.freshSearch(getSearchParams())"
+            crm-ui-datepicker="{time: true}"
+          />
+        </div>
+      </div>
+
+      <div class="crm-section">
+        <div class="label">
+          <label for="endDate">Before date</label>
+        </div>
+        <div class="content">
+          <input
+            id="endDate"
+            name="startDate"
+            title="Before date"
+            ng-model="formValues.endDate"
+            ng-change="searcher.freshSearch(getSearchParams())"
+            crm-ui-datepicker="{time: true}"
+          />
+        </div>
+      </div>
+
+      <div class="crm-section">
+        <div class="label">
+          <label for="action">Calling contact</label>
+        </div>
+        <div class="content">
+          <select
+            id="callingContact"
+            name="callingContact"
+            title="Calling contact"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.callingContact"
+            ng-change="searcher.freshSearch(getSearchParams())"
+            crm-ui-select="{
+                  placeholder: 'Any',
+                  allowClear: true,
+                  }"
+          >
+            <option value=""></option>
+            <option ng-repeat="option in callingContactOptions" value="{{option.value}}">
+              {{option.label}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="crm-section">
+        <div class="label">
+          <label for="entity">Entity</label>
+        </div>
+        <div class="content">
+          <select
+            id="entity"
+            name="entity"
+            title="Entity"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.entity"
+            ng-change="searcher.freshSearch(getSearchParams())"
+            crm-ui-select="{
+            placeholder: 'Any',
+            allowClear: true,
+            }"
+          >
+            <option value=""></option>
+            <option ng-repeat="option in entityOptions" value="{{option.value}}">
+              {{option.label}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="crm-section">
+        <div class="label">
+          <label for="action">Action</label>
+        </div>
+        <div class="content">
+          <select
+            id="action"
+            name="action"
+            title="Action"
+            class="big"
+            multiple="multiple"
+            ng-model="formValues.action"
+            ng-change="searcher.freshSearch(getSearchParams())"
+            crm-ui-select="{
               placeholder: 'Any',
               allowClear: true,
               }"
-    >
-      <option value=""></option>
-      <option ng-repeat="option in callingContactOptions" value="{{option.value}}">{{option.label}}</option>
-    </select>
-  </p>
-
-  <div>{{ts('Found %1 log entries.', {1: searcher.results.count})}}</div>
-
-  <button
-    crm-icon="fa-refresh"
-    ng-click="searcher.freshSearch(getSearchParams())"
-  >
-    Refresh
-  </button>
-
-  <button
-    crm-icon="fa-trash"
-    crm-confirm="{message: ts('Are you sure you want to delete these %1 log entries?', {1: searcher.results.count})}"
-    on-yes="delete()">
-    {{ts('Delete these %1 log entries', {1: searcher.results.count})}}
-  </button>
+          >
+            <option value=""></option>
+            <option ng-repeat="option in actionOptions" value="{{option.value}}">
+              {{option.label}}
+            </option>
+          </select>
+        </div>
+      </div>
 
 
-  <table ng-show="searcher.results.data">
-    <thead>
-    <tr>
-      <th>Id</th>
-      <th>Time</th>
-      <th>Calling contact</th>
-      <th>Entity</th>
-      <th>Action</th>
-      <th>Parameters</th>
-    </tr>
-    </thead>
-    <!-- TODO: when we get to the bottom we need stop making XHR -->
-    <tbody
-      infinite-scroll="searcher.continuedSearch(getSearchParams())"
-      infinite-scroll-disabled="searcher.isBusy || searcher.results.isComplete"
-      infinite-scroll-distance="1">
-    <tr ng-repeat="row in searcher.results.data">
-      <td>{{row.id}}</td>
-      <td>{{row.time_stamp}}</td>
-      <td><a ng-href="/civicrm/contact/view?cid={{row.calling_contact_id}}&reset=1">
-        {{row['calling_contact_id.display_name']}}</a>
-      </td>
-      <td>{{row.entity}}</td>
-      <td>{{row.action}}</td>
-      <td>{{row.parameters}}</td>
-    </tr>
-    </tbody>
-  </table>
+      <div class="crm-submit-buttons">
+
+        <span class="crm-button crm-i-button">
+          <i class="crm-i fa-refresh"></i>
+          <input
+            type="button"
+            crm-icon="fa-refresh"
+            ng-click="searcher.freshSearch(getSearchParams())"
+            value="{{ts('Refresh Results')}}"
+          />
+        </span>
+
+        <span class="crm-button crm-i-button">
+          <i class="crm-i fa-undo"></i>
+          <input
+            type="button"
+            crm-icon="fa-refresh"
+            ng-click="clearForm()"
+            value="{{ts('Clear Search Form')}}"
+          />
+        </span>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+
+  <div class="crm-results-block" ng-hide="searcher.results.isEmpty">
+    <div class="crm-search-tasks">
+
+      <div class="float-right">
+        <span class="crm-button crm-i-button">
+          <i class="crm-i fa-trash"></i>
+          <input
+            type="button"
+            crm-icon="fa-trash"
+            crm-confirm="{message:
+              ts('Are you sure you want to delete these %1 log entries?', {1: searcher.results.count}) + ' ' +
+              ts('There is no undo.')
+              }"
+            on-yes="delete()"
+            value="{{ts('Delete these log entries')}}"
+          />
+        </span>
+      </div>
+
+      <h2>{{ts('Found %1 log entries.', {1: searcher.results.count})}}</h2>
+
+      <div class="clear"></div>
+
+    </div>
+
+    <div class="crm-search-results">
+      <table>
+        <thead>
+        <tr>
+          <th>{{ts('Time stamp')}}</th> <!-- TODO indicate time zone-->
+          <th>{{ts('Calling contact')}}</th>
+          <th>{{ts('Entity')}}</th>
+          <th>{{ts('Action')}}</th>
+          <th>{{ts('Parameters')}}</th>
+        </tr>
+        </thead>
+        <tbody
+          infinite-scroll="searcher.continuedSearch(getSearchParams())"
+          infinite-scroll-disabled="searcher.isBusy || searcher.results.isComplete"
+          infinite-scroll-distance="1">
+        <tr
+          ng-repeat="row in searcher.results.data"
+          ng-class-even="'even-row'"
+          ng-class-odd="'odd-row'"
+        >
+          <td>{{row.time_stamp}}</td>
+          <td>
+            <a ng-href="/civicrm/contact/view?cid={{row.calling_contact_id}}&reset=1">
+              {{row['calling_contact_id.display_name']}}
+            </a>
+          </td>
+          <td>{{row.entity}}</td>
+          <td>{{row.action}}</td>
+          <td>{{row.parameters}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+
+
+  <div ng-show="searcher.results.isEmpty" class="crm-results-block crm-results-block-empty">
+    <div class="crm-search-tasks">
+      <h2>{{ts('No log entries found')}}</h2>
+    </div>
+  </div>
+
 
 </div>

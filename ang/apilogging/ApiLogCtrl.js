@@ -2,6 +2,8 @@
 
   var apilogging = angular.module('apilogging');
 
+  // TODO: add indexes to the table
+
   apilogging.config(
     function ($routeProvider) {
       $routeProvider.when('/apilogging/log', {
@@ -76,14 +78,15 @@
         ],
         "options": {
           "limit": this.pageSize,
-          "sort": "id", // "time_stamp desc" TODO
+          "sort": "time_stamp desc",
           "offset": 0
         }
       };
       this.results = {
         count: 0,
         data: [],
-        isComplete: false
+        isComplete: false,
+        isEmpty: true
       };
     };
 
@@ -103,6 +106,7 @@
           // Clear existing results if doing a fresh search
           this.results.data = [];
           this.results.isComplete = false;
+          this.results.isEmpty = (result.values.length === 0);
         }
         if (result.values.length === 0) {
           this.results.isComplete = true;
@@ -133,7 +137,7 @@
 
   }]);
 
-  apilogging.controller('ApiloggingApiLogCtrl',
+  apilogging.controller('ApiloggingApiLogCtrl', ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher',
     function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions, Searcher) {
 
       $scope.ts = CRM.ts('apilogging');
@@ -142,10 +146,15 @@
       $scope.actionOptions = actionsOptions;
       $scope.callingContactOptions = callingContactOptions;
       $scope.searcher = new Searcher('ApiloggingLog');
-      $scope.formValues = {          entity: [],
+      $scope.foobar = '';
+      $scope.defaultFormValues = {
+        entity: [],
         action: [],
-        callingContact: []
+        callingContact: [],
+        startDate: '',
+        endDate: ''
       };
+
 
       /**
        * Looks at $scope.formValues. Then assembles and returns an object
@@ -155,30 +164,42 @@
       $scope.getSearchParams = function () {
         var params = {};
         if ($scope.formValues.entity.length > 0) {
-          params = _.merge(params, {"entity": {"IN": $scope.formValues.entity}});
+          _.merge(params, {"entity": {"IN": $scope.formValues.entity}});
         }
         if ($scope.formValues.action.length > 0) {
-          params = _.merge(params, {"action": {"IN": $scope.formValues.action}});
+          _.merge(params, {"action": {"IN": $scope.formValues.action}});
         }
         if ($scope.formValues.callingContact.length > 0) {
-          params = _.merge(params, {"calling_contact_id": {"IN": $scope.formValues.callingContact}});
+          _.merge(params, {"calling_contact_id": {"IN": $scope.formValues.callingContact}});
+        }
+        if ($scope.formValues.startDate.length > 0 && $scope.formValues.endDate.length > 0) {
+          _.merge(params, {"time_stamp":
+            {"BETWEEN": [$scope.formValues.startDate, $scope.formValues.endDate]}
+          });
+        }
+        else if ($scope.formValues.startDate.length > 0) {
+          _.merge(params, {"time_stamp": {">=": $scope.formValues.startDate}});
+        }
+        else if ($scope.formValues.endDate.length > 0) {
+          _.merge(params, {"time_stamp": {"<=": $scope.formValues.endDate}});
         }
         return params;
       };
 
-      // TODO: Search, filter one value, then clear that value. Should update. Doesn't.
 
+      $scope.clearForm = function () {
+        $scope.formValues = {};
+        _.merge($scope.formValues, $scope.defaultFormValues);
+        $scope.searcher.freshSearch($scope.getSearchParams());
+      };
 
-      // start with search already done
-      $scope.searcher.freshSearch($scope.getSearchParams());
+      $scope.clearForm();
 
       $scope.delete = function () {
         alert('TODO');
       }
 
-    },
-    ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher'
-    ]
+    }]
   );
 
 })(angular, CRM.$, CRM._);
