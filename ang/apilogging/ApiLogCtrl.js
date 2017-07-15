@@ -147,7 +147,7 @@
       $scope.callingContactOptions = callingContactOptions;
       $scope.searcher = new Searcher('ApiloggingLog');
       $scope.foobar = '';
-      $scope.defaultFormValues = {
+      $scope.formValues = {
         entity: [],
         action: [],
         callingContact: [],
@@ -186,18 +186,8 @@
         return params;
       };
 
-
-      $scope.clearForm = function () {
-        $scope.formValues = {};
-        _.merge($scope.formValues, $scope.defaultFormValues);
-        $scope.searcher.freshSearch($scope.getSearchParams());
-      };
-
-      $scope.clearForm();
-
-      $scope.delete = function () {
-        alert('TODO');
-      }
+      // Start with a search already performed
+      $scope.searcher.freshSearch($scope.getSearchParams());
 
     }]
   );

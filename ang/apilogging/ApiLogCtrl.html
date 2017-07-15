@@ -131,16 +131,6 @@
           />
         </span>
 
-        <span class="crm-button crm-i-button">
-          <i class="crm-i fa-undo"></i>
-          <input
-            type="button"
-            crm-icon="fa-refresh"
-            ng-click="clearForm()"
-            value="{{ts('Clear Search Form')}}"
-          />
-        </span>
-
       </div>
 
     </form>
@@ -152,25 +142,7 @@
   <div class="crm-results-block" ng-hide="searcher.results.isEmpty">
     <div class="crm-search-tasks">
 
-      <div class="float-right">
-        <span class="crm-button crm-i-button">
-          <i class="crm-i fa-trash"></i>
-          <input
-            type="button"
-            crm-icon="fa-trash"
-            crm-confirm="{message:
-              ts('Are you sure you want to delete these %1 log entries?', {1: searcher.results.count}) + ' ' +
-              ts('There is no undo.')
-              }"
-            on-yes="delete()"
-            value="{{ts('Delete these log entries')}}"
-          />
-        </span>
-      </div>
-
       <h2>{{ts('Found %1 log entries.', {1: searcher.results.count})}}</h2>
-
-      <div class="clear"></div>
 
     </div>
 
