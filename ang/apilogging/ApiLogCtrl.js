@@ -59,6 +59,17 @@
     }
   );
 
+  apilogging.filter('formatJsonString', function () {
+    return function (jsonString) {
+      try {
+        return JSON.stringify(JSON.parse(jsonString), null, 1);
+      }
+      catch (error) {
+        return '';
+      }
+    };
+  });
+
   apilogging.factory('Searcher', ['crmApi', function (crmApi) {
 
     var Searcher = function (entity) {
@@ -137,8 +148,8 @@
 
   }]);
 
-  apilogging.controller('ApiloggingApiLogCtrl', ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher',
-    function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions, Searcher) {
+  apilogging.controller('ApiloggingApiLogCtrl', ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher', 'formatJsonStringFilter',
+    function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions, Searcher, formatJsonStringFilter) {
 
       $scope.ts = CRM.ts('apilogging');
       $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
@@ -154,7 +165,6 @@
         startDate: '',
         endDate: ''
       };
-
 
       /**
        * Looks at $scope.formValues. Then assembles and returns an object
