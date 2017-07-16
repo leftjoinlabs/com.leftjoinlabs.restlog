@@ -127,8 +127,8 @@ class CRM_Apilogging_Logger {
     CRM_Apilogging_BAO_ApiloggingLog::create(array(
       'time_stamp' => $this->timeString(),
       'calling_contact_id' => $logValues['called_by']['id'],
-      'entity' => $logValues['entity'],
-      'action' => $logValues['action'],
+      'entity' => strtolower($logValues['entity']),
+      'action' => strtolower($logValues['action']),
       'parameters' => json_encode($parameters),
     ));
   }
