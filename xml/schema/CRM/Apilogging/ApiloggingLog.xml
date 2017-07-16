@@ -23,6 +23,10 @@
     <title>Time stamp</title>
     <required>true</required>
   </field>
+  <index>
+    <name>index_time_stamp</name>
+    <fieldName>time_stamp</fieldName>
+  </index>
 
   <field>
     <name>calling_contact_id</name>
@@ -36,6 +40,10 @@
     <key>id</key>
     <onDelete>SET NULL</onDelete>
   </foreignKey>
+  <index>
+    <name>index_calling_contact_id</name>
+    <fieldName>calling_contact_id</fieldName>
+  </index>
 
   <field>
     <name>entity</name>
@@ -43,6 +51,10 @@
     <title>Entity</title>
     <length>100</length>
   </field>
+  <index>
+    <name>index_entity</name>
+    <fieldName>entity</fieldName>
+  </index>
 
   <field>
     <name>action</name>
@@ -50,6 +62,10 @@
     <title>Action</title>
     <length>100</length>
   </field>
+  <index>
+    <name>index_action</name>
+    <fieldName>action</fieldName>
+  </index>
 
   <field>
     <name>parameters</name>
