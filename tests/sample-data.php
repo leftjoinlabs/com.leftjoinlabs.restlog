@@ -31,8 +31,8 @@ while ($date < $end) {
   $oneDay = new DateInterval('P1D');
   $date->add($oneDay);
   $dateString = $date->format('Y-m-d H:i:s');
-  $rows[] =
-    "("
+  $rows[]
+    = "("
     . "'$dateString', "
     . array_rand_values(array(50, 100, 189, 203)) . ", "
     . "'" . array_rand_values(array('contact', 'contribution', 'event', 'activity')) . "', "

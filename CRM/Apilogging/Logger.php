@@ -21,7 +21,7 @@ class CRM_Apilogging_Logger {
     $this->logFile = __DIR__ . '/../../../../ConfigAndLog/Api.log';
 
     $this->time = array_combine(
-        array( 'microseconds', 'seconds'),
+        array('microseconds', 'seconds'),
         explode(" ", microtime())
     );
     if (!file_exists($this->logFile)) {
@@ -87,7 +87,7 @@ class CRM_Apilogging_Logger {
    *
    * @return array
    */
-  protected function getLogValues () {
+  protected function getLogValues() {
     $defaults = array('entity' => '', 'action' => '');
     $logValues = array_merge($defaults, $_REQUEST);
     if (!empty($_REQUEST['json'])) {
