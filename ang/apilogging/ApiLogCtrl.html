@@ -59,7 +59,7 @@
                   }"
           >
             <option value=""></option>
-            <option ng-repeat="option in callingContactOptions" value="{{option.value}}">
+            <option ng-repeat="option in options.callingContact" value="{{option.value}}">
               {{option.label}}
             </option>
           </select>
@@ -85,7 +85,7 @@
             }"
           >
             <option value=""></option>
-            <option ng-repeat="option in entityOptions" value="{{option.value}}">
+            <option ng-repeat="option in options.entity" value="{{option.value}}">
               {{option.label}}
             </option>
           </select>
@@ -111,7 +111,7 @@
               }"
           >
             <option value=""></option>
-            <option ng-repeat="option in actionOptions" value="{{option.value}}">
+            <option ng-repeat="option in options.action" value="{{option.value}}">
               {{option.label}}
             </option>
           </select>
@@ -126,7 +126,7 @@
           <input
             type="button"
             crm-icon="fa-refresh"
-            ng-click="searcher.freshSearch(getSearchParams())"
+            ng-click="refresh()"
             value="{{ts('Refresh Results')}}"
           />
         </span>

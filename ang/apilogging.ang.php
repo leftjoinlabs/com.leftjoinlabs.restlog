@@ -6,9 +6,7 @@ return array (
     1 => 'ang/apilogging/*.js',
     2 => 'ang/apilogging/*/*.js',
   ),
-  'css' => array (
-    0 => 'ang/apilogging.css',
-  ),
+  'css' => array (),
   'partials' => array (
     0 => 'ang/apilogging',
   ),

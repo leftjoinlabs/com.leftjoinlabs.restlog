@@ -2,59 +2,11 @@
 
   var apilogging = angular.module('apilogging');
 
-  // TODO: add indexes to the table
-
   apilogging.config(
     function ($routeProvider) {
       $routeProvider.when('/apilogging/log', {
         controller: 'ApiloggingApiLogCtrl',
-        templateUrl: '~/apilogging/ApiLogCtrl.html',
-
-        resolve: {
-
-          entityOptions: function (crmApi) {
-            return crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'entity'})
-              .then(function (data) {
-                return data.values;
-              }, function (error) {
-                if (error.is_error) {
-                  CRM.alert(error.error_message, ts("Error"), "error");
-                }
-                else {
-                  return error;
-                }
-              });
-          },
-
-          actionsOptions: function (crmApi) {
-            return crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'action'})
-              .then(function (data) {
-                return data.values;
-              }, function (error) {
-                if (error.is_error) {
-                  CRM.alert(error.error_message, ts("Error"), "error");
-                }
-                else {
-                  return error;
-                }
-              });
-          },
-
-          callingContactOptions: function (crmApi) {
-            return crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'calling_contact'})
-              .then(function (data) {
-                return data.values;
-              }, function (error) {
-                if (error.is_error) {
-                  CRM.alert(error.error_message, ts("Error"), "error");
-                }
-                else {
-                  return error;
-                }
-              });
-          }
-
-        }
+        templateUrl: '~/apilogging/ApiLogCtrl.html'
       });
     }
   );
@@ -148,16 +100,17 @@
 
   }]);
 
-  apilogging.controller('ApiloggingApiLogCtrl', ['$scope', 'crmApi', 'crmStatus', 'crmUiHelp', 'entityOptions', 'actionsOptions', 'callingContactOptions', 'Searcher', 'formatJsonStringFilter',
-    function ($scope, crmApi, crmStatus, crmUiHelp, entityOptions, actionsOptions, callingContactOptions, Searcher, formatJsonStringFilter) {
-
+  apilogging.controller('ApiloggingApiLogCtrl', [
+    '$scope',
+    'crmApi',
+    'crmStatus',
+    'crmUiHelp',
+    'Searcher',
+    'formatJsonStringFilter',
+    function ($scope, crmApi, crmStatus, crmUiHelp, Searcher, formatJsonStringFilter) {
       $scope.ts = CRM.ts('apilogging');
       $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
-      $scope.entityOptions = entityOptions;
-      $scope.actionOptions = actionsOptions;
-      $scope.callingContactOptions = callingContactOptions;
       $scope.searcher = new Searcher('ApiloggingLog');
-      $scope.foobar = '';
       $scope.formValues = {
         entity: [],
         action: [],
@@ -183,23 +136,44 @@
           _.merge(params, {"calling_contact_id": {"IN": $scope.formValues.callingContact}});
         }
         if ($scope.formValues.startDate.length > 0 && $scope.formValues.endDate.length > 0) {
-          _.merge(params, {"time_stamp":
-            {"BETWEEN": [$scope.formValues.startDate, $scope.formValues.endDate]}
+          _.merge(params, {
+            "time_stamp": {"BETWEEN": [$scope.formValues.startDate, $scope.formValues.endDate]}
           });
         }
-        else if ($scope.formValues.startDate.length > 0) {
-          _.merge(params, {"time_stamp": {">=": $scope.formValues.startDate}});
-        }
-        else if ($scope.formValues.endDate.length > 0) {
-          _.merge(params, {"time_stamp": {"<=": $scope.formValues.endDate}});
+        else {
+          if ($scope.formValues.startDate.length > 0) {
+            _.merge(params, {"time_stamp": {">=": $scope.formValues.startDate}});
+          }
+          else {
+            if ($scope.formValues.endDate.length > 0) {
+              _.merge(params, {"time_stamp": {"<=": $scope.formValues.endDate}});
+            }
+          }
         }
         return params;
       };
 
-      // Start with a search already performed
-      $scope.searcher.freshSearch($scope.getSearchParams());
+      $scope.refresh = function () {
+        $scope.searcher.freshSearch($scope.getSearchParams());
+        $scope.options = {};
+        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'entity'})
+          .then(function (data) {
+            $scope.options.entity = data.values;
+          });
+        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'action'})
+          .then(function (data) {
+            $scope.options.action = data.values;
+          });
+        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'calling_contact'})
+          .then(function (data) {
+            $scope.options.callingContact = data.values;
+          });
+      };
 
-    }]
-  );
+      // Start with a search already performed
+      $scope.refresh();
+
+    }
+  ]);
 
 })(angular, CRM.$, CRM._);
