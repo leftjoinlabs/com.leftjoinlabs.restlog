@@ -155,15 +155,15 @@ function apilogging_civicrm_preProcess($formName, &$form) {
  * Implements hook_civicrm_navigationMenu().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
- *
+ */
 function apilogging_civicrm_navigationMenu(&$menu) {
-  _apilogging_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => ts('The Page', array('domain' => 'com.cividesk.apilogging')),
-    'name' => 'the_page',
-    'url' => 'civicrm/the-page',
-    'permission' => 'access CiviReport,access CiviContribute',
+  _apilogging_civix_insert_navigation_menu($menu, 'Administer', array(
+    'label' => ts('Apilogging Log', array('domain' => 'com.cividesk.apilogging')),
+    'name' => 'apilogginglog',
+    'url' => 'civicrm/a/#/apilogging/log',
+    'permission' => 'administer CiviCRM',
     'operator' => 'OR',
     'separator' => 0,
   ));
   _apilogging_civix_navigationMenu($menu);
-} // */
+}
