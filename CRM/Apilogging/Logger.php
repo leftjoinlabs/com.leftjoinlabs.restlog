@@ -17,20 +17,12 @@ class CRM_Apilogging_Logger {
    * CRM_Apilogging_Logger constructor.
    */
   public function __construct() {
-
     // Set up log file
-    $logDir = Civi::paths()->getPath('ConfigAndLog');
+    $logDir = CRM_Core_Config::singleton()->configAndLogDir;
     $this->logFile = $logDir . DIRECTORY_SEPARATOR . 'Api.log';
     if (!file_exists($this->logFile)) {
       touch($this->logFile);
     }
-
-    // Get current time
-    // TODO use timezone of server
-    $this->time = array_combine(
-        array('microseconds', 'seconds'),
-        explode(" ", microtime())
-    );
   }
 
   /**
@@ -92,14 +84,36 @@ class CRM_Apilogging_Logger {
    * @return array
    */
   protected function getLogValues() {
-    $defaults = array('entity' => '', 'action' => '');
-    $logValues = array_merge($defaults, $_REQUEST);
+    $logValues = array();
+
+    // Grab parameters from request and make sure 'entity' and 'action' are
+    // present as keys
+    $defaultParameters = array('entity' => '', 'action' => '');
+    $parameters = array_merge($defaultParameters, $_REQUEST);
+
+    // Remove sensitive info from $parameters
+    CRM_Utils_Array::remove($parameters, array('key', 'api_key'));
+
+    // Flatten params inside of 'json', if present
     if (!empty($_REQUEST['json'])) {
       $json = json_decode($_REQUEST['json'], TRUE);
-      $logValues = array_merge($logValues, $json);
+      $parameters = array_merge($parameters, $json);
+      CRM_Utils_Array::remove($parameters, array('json'));
     }
-    CRM_Utils_Array::remove($logValues, array('key', 'api_key', 'json'));
-    $logValues['called_by'] = $this->getCallingContact();
+
+    $logValues['time_stamp'] = $this->timeString();
+
+    // Move 'entity' from $parameters to $logValues
+    $logValues['entity'] = strtolower($parameters['entity']);
+    CRM_Utils_Array::remove($parameters, 'entity');
+
+    // Move 'action' from $parameters to $logValues
+    $logValues['action'] = strtolower($parameters['action']);
+    CRM_Utils_Array::remove($parameters, 'action');
+
+    $logValues['calling_contact'] = $this->getCallingContact();
+    $logValues['parameters'] = $parameters;
+
     return $logValues;
   }
 
@@ -110,9 +124,8 @@ class CRM_Apilogging_Logger {
    * @param array $logValues
    */
   protected function writeLogFile($logValues) {
-    $content = '"' . self::microTimeString() . '": ';
-    $content .= json_encode($logValues, JSON_PRETTY_PRINT) . "," . PHP_EOL;
-    $content .= PHP_EOL . PHP_EOL;
+    $content = json_encode($logValues, JSON_PRETTY_PRINT) . ","
+      . PHP_EOL . PHP_EOL . PHP_EOL;
     file_put_contents($this->logFile, $content, FILE_APPEND);
   }
 
@@ -122,18 +135,12 @@ class CRM_Apilogging_Logger {
    * @param array $logValues
    */
   protected function writeLogDB($logValues) {
-    $parameters = $logValues;
-    CRM_Utils_Array::remove($parameters, array(
-      'called_by',
-      'entity',
-      'action',
-    ));
     CRM_Apilogging_BAO_ApiloggingLog::create(array(
-      'time_stamp' => $this->timeString(),
-      'calling_contact_id' => $logValues['called_by']['id'],
-      'entity' => strtolower($logValues['entity']),
-      'action' => strtolower($logValues['action']),
-      'parameters' => json_encode($parameters),
+      'time_stamp' => $logValues['time_stamp'],
+      'calling_contact_id' => $logValues['calling_contact']['id'],
+      'entity' => $logValues['entity'],
+      'action' => $logValues['action'],
+      'parameters' => json_encode($logValues['parameters']),
     ));
   }
 
@@ -144,20 +151,8 @@ class CRM_Apilogging_Logger {
    * @return string
    */
   protected function timeString() {
-    $d = new DateTime('@' . $this->time['seconds']);
+    $d = new DateTime();
     return $d->format('Y-m-d H:i:s');
-  }
-
-  /**
-   * Return a string which represents the current time. Format is ISO 8601 plus
-   * microseconds
-   *
-   * @return string
-   */
-  protected function microTimeString() {
-    return $this->timeString()
-      . ltrim($this->time['microseconds'], "0")
-      . "+00:00";
   }
 
 }
