@@ -17,16 +17,20 @@ class CRM_Apilogging_Logger {
    * CRM_Apilogging_Logger constructor.
    */
   public function __construct() {
-    // TODO: find a better way to determine this path
-    $this->logFile = __DIR__ . '/../../../../ConfigAndLog/Api.log';
 
+    // Set up log file
+    $logDir = Civi::paths()->getPath('ConfigAndLog');
+    $this->logFile = $logDir . DIRECTORY_SEPARATOR . 'Api.log';
+    if (!file_exists($this->logFile)) {
+      touch($this->logFile);
+    }
+
+    // Get current time
+    // TODO use timezone of server
     $this->time = array_combine(
         array('microseconds', 'seconds'),
         explode(" ", microtime())
     );
-    if (!file_exists($this->logFile)) {
-      touch($this->logFile);
-    }
   }
 
   /**
