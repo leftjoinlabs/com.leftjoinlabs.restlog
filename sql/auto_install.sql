@@ -1,15 +1,15 @@
-DROP TABLE IF EXISTS `civicrm_apilogginglog`;
+DROP TABLE IF EXISTS `civicrm_restlog`;
 
 -- /*******************************************************
 -- *
--- * civicrm_apilogginglog
+-- * civicrm_restlog
 -- *
 -- * A log of incoming REST API calls
 -- *
 -- *******************************************************/
-CREATE TABLE `civicrm_apilogginglog` (
+CREATE TABLE `civicrm_restlog` (
   `id`                 INT UNSIGNED NOT NULL AUTO_INCREMENT
-  COMMENT 'Unique ApiloggingLog ID',
+  COMMENT 'Unique RestLog ID',
   `time_stamp`         DATETIME     NOT NULL,
   `calling_contact_id` INT UNSIGNED
   COMMENT 'FK to the id of the contact who made the API call',
@@ -21,7 +21,7 @@ CREATE TABLE `civicrm_apilogginglog` (
   INDEX `index_calling_contact_id`(calling_contact_id),
   INDEX `index_entity`(entity),
   INDEX `index_action`(action),
-  CONSTRAINT FK_civicrm_apilogginglog_calling_contact_id
+  CONSTRAINT FK_civicrm_restlog_calling_contact_id
   FOREIGN KEY (`calling_contact_id`)
   REFERENCES `civicrm_contact` (`id`)
     ON DELETE SET NULL

@@ -4,8 +4,8 @@
 return array (
   0 => 
   array (
-    'name' => 'ApiloggingLog',
-    'class' => 'CRM_Apilogging_DAO_ApiloggingLog',
-    'table' => 'civicrm_apilogginglog',
+    'name' => 'RestLog',
+    'class' => 'CRM_RestLog_DAO_RestLog',
+    'table' => 'civicrm_restlog',
   ),
 );

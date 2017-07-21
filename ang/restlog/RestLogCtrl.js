@@ -1,12 +1,12 @@
 (function (angular, $, _) {
 
-  var apilogging = angular.module('apilogging');
+  var restlog = angular.module('restlog');
 
-  apilogging.config(
+  restlog.config(
     function ($routeProvider) {
-      $routeProvider.when('/apilogging/log', {
-        controller: 'ApiloggingApiLogCtrl',
-        templateUrl: '~/apilogging/ApiLogCtrl.html'
+      $routeProvider.when('/restlog', {
+        controller: 'RestLogCtrl',
+        templateUrl: '~/restlog/RestLogCtrl.html'
       });
     }
   );
@@ -25,7 +25,7 @@
    * @returns {string}
    *
    */
-  apilogging.filter('formatJsonString', function () {
+  restlog.filter('formatJsonString', function () {
     return function (jsonString) {
       try {
         return JSON.stringify(JSON.parse(jsonString), null, 1);
@@ -42,9 +42,9 @@
    *
    * @description
    *
-   * Provides an interface to the server for retrieving ApiloggingLog data.
+   * Provides an interface to the server for retrieving RestLog data.
    */
-  apilogging.factory('Searcher', ['crmApi', function (crmApi) {
+  restlog.factory('Searcher', ['crmApi', function (crmApi) {
 
     var Searcher = function (entity) {
 
@@ -132,7 +132,7 @@
      *
      * @param {object} searchParams
      *   Parameters expected by the CiviCRM API when `action` = `get` and
-     *   `entity` = `ApiloggingLog`.
+     *   `entity` = `RestLog`.
      *
      * @param {boolean} isFresh
      *   - Pass `true` to perform a search from scratch and fetch the first
@@ -198,7 +198,7 @@
 
   }]);
 
-  apilogging.controller('ApiloggingApiLogCtrl', [
+  restlog.controller('RestLogCtrl', [
     '$scope',
     'crmApi',
     'crmStatus',
@@ -206,9 +206,9 @@
     'Searcher',
     'formatJsonStringFilter',
     function ($scope, crmApi, crmStatus, crmUiHelp, Searcher, formatJsonStringFilter) {
-      $scope.ts = CRM.ts('apilogging');
-      $scope.hs = crmUiHelp({file: 'CRM/apilogging/ApiLogCtrl'});
-      $scope.searcher = new Searcher('ApiloggingLog');
+      $scope.ts = CRM.ts('restlog');
+      $scope.hs = crmUiHelp({file: 'CRM/restlog/RestLogCtrl'});
+      $scope.searcher = new Searcher('RestLog');
       $scope.formValues = {
         entity: [],
         action: [],
@@ -261,15 +261,15 @@
       $scope.refresh = function () {
         $scope.searcher.freshSearch($scope.getSearchParams());
         $scope.options = {};
-        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'entity'})
+        crmApi('RestLog', 'getuniquevalues', {'field': 'entity'})
           .then(function (data) {
             $scope.options.entity = data.values;
           });
-        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'action'})
+        crmApi('RestLog', 'getuniquevalues', {'field': 'action'})
           .then(function (data) {
             $scope.options.action = data.values;
           });
-        crmApi('ApiloggingLog', 'getuniquevalues', {'field': 'calling_contact'})
+        crmApi('RestLog', 'getuniquevalues', {'field': 'calling_contact'})
           .then(function (data) {
             $scope.options.callingContact = data.values;
           });

@@ -14,7 +14,7 @@ function array_rand_values($array) {
   return $array[array_rand($array)];
 }
 
-$sql = "insert into civicrm_apilogginglog (
+$sql = "insert into civicrm_restlog (
   time_stamp,
   calling_contact_id,
   entity,

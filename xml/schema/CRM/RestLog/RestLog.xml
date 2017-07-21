@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 
 <table>
-  <base>CRM/Apilogging</base>
-  <class>ApiloggingLog</class>
-  <name>civicrm_apilogginglog</name>
+  <base>CRM/RestLog</base>
+  <class>RestLog</class>
+  <name>civicrm_restlog</name>
   <comment>A log of incoming REST API calls</comment>
 
   <field>
     <name>id</name>
     <type>int unsigned</type>
     <required>true</required>
-    <comment>Unique ApiloggingLog ID</comment>
+    <comment>Unique RestLog ID</comment>
   </field>
   <primaryKey>
     <name>id</name>

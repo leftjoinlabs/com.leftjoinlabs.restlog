@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `civicrm_apilogginglog`;
+DROP TABLE IF EXISTS `civicrm_restlog`;

@@ -1,6 +1,6 @@
 <?php
 
-class CRM_Apilogging_Logger {
+class CRM_RestLog_Logger {
 
   /**
    * @var string full filesystem path to log file to use
@@ -14,12 +14,12 @@ class CRM_Apilogging_Logger {
   protected $time;
 
   /**
-   * CRM_Apilogging_Logger constructor.
+   * CRM_RestLog_Logger constructor.
    */
   public function __construct() {
     // Set up log file
     $logDir = CRM_Core_Config::singleton()->configAndLogDir;
-    $this->logFile = $logDir . DIRECTORY_SEPARATOR . 'Api.log';
+    $this->logFile = $logDir . DIRECTORY_SEPARATOR . 'REST.log';
     if (!file_exists($this->logFile)) {
       touch($this->logFile);
     }
@@ -35,8 +35,8 @@ class CRM_Apilogging_Logger {
    */
   protected function logIsNecessary($apiRequest) {
     $hasKeys = !empty($_REQUEST['key']) && !empty($_REQUEST['api_key']);
-    if ($hasKeys && empty($GLOBALS['apilogging_logged'])) {
-      $GLOBALS['apilogging_logged'] = TRUE;
+    if ($hasKeys && empty($GLOBALS['restlog_logged'])) {
+      $GLOBALS['restlog_logged'] = TRUE;
       return TRUE;
     }
     else {
@@ -135,7 +135,7 @@ class CRM_Apilogging_Logger {
    * @param array $logValues
    */
   protected function writeLogDB($logValues) {
-    CRM_Apilogging_BAO_ApiloggingLog::create(array(
+    CRM_RestLog_BAO_RestLog::create(array(
       'time_stamp' => $logValues['time_stamp'],
       'calling_contact_id' => $logValues['calling_contact']['id'],
       'entity' => $logValues['entity'],
