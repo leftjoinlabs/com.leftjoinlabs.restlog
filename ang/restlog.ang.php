@@ -10,7 +10,6 @@ return array(
   'partials' => array(
     0 => 'ang/restlog',
   ),
-  'settings' => array(),
   'requires' => array(
     'crmUi',
     'ngRoute',
